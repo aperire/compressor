@@ -19,12 +19,12 @@ def group_constant_finder(bn_str : str, lowest_range : int, highest_range: int)-
             key_prob[key_variety]=(math.comb(2**group_constant,key_variety))*(key_variety**group_num-(key_variety-1)**group_num)
         key_prob=dict(sorted(key_prob.items(), key=lambda group: group[1], reverse=True))
         highest_probability_key=list(key_prob.keys())[0]
-        compressability[group_constant]=math.log2(highest_probability_key)*group_num
+        compressability[group_constant]=math.log2(highest_probability_key)*(group_num+highest_probability_key)+group_constant*highest_probability_key
     compressability=dict(sorted(compressability.items(), key=lambda group: group[1], reverse=False))
     if(highest_range-lowest_range+1)<5:
         return list(compressability.keys())[:highest_range-lowest_range+1]
     return list(compressability.keys())[:5]
 
 
-
+# print(group_constant_finder("10101010100101111010001010100010111101010100101010101010010111101010100011010101010100101010110101010101011",2,3))
 
