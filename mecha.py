@@ -4,6 +4,7 @@ import sys
 import math
 import matplotlib.pyplot as plt
 from ast import literal_eval
+import binascii
 
 
 class cucha:
@@ -73,8 +74,67 @@ class cucha:
 
         for key, val in key_dict.items():
             key_list.append(f"{key}{val}")
-        
-        
-        return key_list
-    
-    def generate_enc_file(self, bn_str: str, group_constant: int) -> 
+
+        key_char = str()
+        key_char_list = list()
+        for i in key_list:
+            if key_list.index(i) != 0:
+                key_char += i
+        temp = str()
+        for i in key_char:
+            temp += i
+            if len(temp) == 8:
+                key_char_list.append(chr(int(temp, 2)))
+                temp = ""
+        leftover_length = len(key_char) % 8
+        if leftover_length != 0:
+            leftover = key_char[(-1) * leftover_length :]
+            while len(leftover) < 8:
+                leftover = "0" + leftover
+            key_char_list.append(chr(int(leftover, 2)))
+
+        title = f"test/{group_constant}_{leftover_length}.txt"
+        enc_key = str()
+        for i in key_char_list:
+            enc_key += i
+
+        with open(title, "w") as f:
+            f.write(enc_key)
+
+        size = os.stat(title).st_size
+        return size
+
+    def generate_enc_file(self, bn_str: str, group_constant: int):
+        key_dict, enc_list = self.generate_key_enc(bn_str, group_constant)
+        enc_char = str()
+        for i in enc_list:
+            enc_char += i
+
+        enc_char_list = list()
+        temp = str()
+        for i in enc_char:
+            temp += i
+            if len(temp) == 8:
+
+                enc_char_list.append(chr(int(temp, 2)))
+                temp = ""
+        leftover_length = len(enc_char) % 8
+
+        if leftover_length != 0:
+            leftover = enc_char[(-1) * leftover_length :]
+
+            while len(leftover) < 8:
+                leftover = "0" + leftover
+
+            enc_char_list.append(chr(int(leftover, 2)))
+
+        title = f"test/{leftover_length}.txt"
+        content = str()
+        for i in enc_char_list:
+            content += i
+        print(len(content))
+        with open(title, "w") as f:
+            f.write(content)
+
+        size = os.stat(title).st_size
+        return size
